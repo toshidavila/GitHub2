@@ -9,10 +9,9 @@
             'name'    => 'username',
             'class' => 'form-control',
             'id'    => 'username',
-            'type' => 'text',
-            'required' => '',
-            'data-required-error' => $this->lang->line('required'),
-            'data-username' => 'username',
+			'type' => 'text',
+			'required' => '',
+			'data-required-error' => 'PONELOOOOO',
             'value' => set_value('username'),
             'maxlength'    => $this->config->item('username_max_length', 'tank_auth'),
             'placeholder' => 'Permanecer&aacute; visible en tu perfil'
@@ -22,10 +21,10 @@
             'name'    => 'nombre',
             'class' => 'form-control',
             'id'    => 'nombre',
-            'data-username' => 'pp',
             'value'    => set_value('nombre'),
             'maxlength'    => $this->config->item('nombre_max_length', 'tank_auth'),
-            'placeholder' => 'Permanecer&aacute; invisible en tu perfil'
+            'placeholder' => 'Permanecer&aacute; invisible en tu perfil',
+			'data-username' => 'foo'
     );
     $apellido = array(
             'name'    => 'apellido',
@@ -39,8 +38,8 @@
         'name'    => 'email',
         'class' => 'form-control',
         'id'    => 'email',
-        'type'    => 'text',
-        'pattern' => '^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?',
+		'type'    => 'text',
+		'pattern' => '^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?',
         'value'    => set_value('email'),
         'maxlength'    => $this->config->item('email_max_length', 'tank_auth'),
         'placeholder' => 'Permanecer&aacute; invisible en tu perfil'
@@ -80,18 +79,18 @@
         <a href='<?php echo $fbLorginUrl ?>'><span class="facebookConnect"><span class="facebookLogo"></span>Ingresar con Facebook</span></a>
         <div class="panel panel-default">
             <div class="panel-body">
-                <form role="form" action="<?php echo base_url()?>ucp/register" method="post" id ="registerForm">
-
-                    <div class="form-group hidden">
-                        <label for="ci_csrf_token" class="sr-only"></label>
-                        <input type="hidden" class="form-control" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash()?>" />
-                    </div>
-
-                    <?php if ($use_username) { ?>
+                <form role="form" action="<?php echo base_url()?>ucp/register" method="post" id ="registerForm" data-toggle="validator">
+				
+					<div class="form-group hidden">
+						<label for="ci_csrf_token" class="sr-only"></label>
+						<input type="hidden" class="form-control" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash()?>" />
+					</div>
+                   
+                    <?php if ($use_username) { ?>                   
                     <div class="form-group <?=(getErr($username['name'], isset($errors)?$errors:NULL)!=''?'has-error':'')?>">
                         <?php echo form_label('Nombre de usuario *', $username['id']); ?>
                         <?php echo form_input($username); ?>
-                        <span class="help-block with-errors"><?= getErr($username['name'], isset($errors)?$errors:NULL) ?></span>
+						<span class="help-block with-errors"><?= getErr($username['name'], isset($errors)?$errors:NULL) ?></span>
                     </div>
                     <?php } ?>
                     <div class="form-group">
@@ -107,7 +106,7 @@
                     <div class="form-group">
                         <?php echo form_label('Correo electr&oacute;nico *', $email['id']); ?>
                         <?php echo form_input($email); ?>
-                        <div class="help-block with-errors"></div>
+						<div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group">
                         <?php echo form_label('Contrase&ntilde;a *', $password['id']); ?>
@@ -139,7 +138,7 @@
                         G&eacute;nero *
                         <select name="genero"><option value="0"></option><?php echo generate_options(set_value('genero'),1,2,'callback_genero')?></select>
                         <span style="color: red; text-align: left;"><?php echo form_error('genero'); ?></span>
-                    </div>
+                    </div>       
     <?php /*
                     <?php if ($captcha_registration) {
                         if ($use_recaptcha) { ?>
@@ -183,7 +182,7 @@
                     </tr>
                     <?php }
                     } ?>
-
+                   
                     <tr>
                         <th colspan="2" style="padding-top: 30px;"><input type="checkbox"
                             name='aceptLegales' value="1"
@@ -198,7 +197,7 @@
                     </tr>
     */?>
 
-                        <th><?php echo form_submit('register', 'Registrarse', 'class="submit" id="submit"'); ?>
+                        <th><?php echo form_submit('register', 'Registrarse', 'class="submit" id="submit"'); ?>               
 
 
                     <div class="leylegal">
@@ -228,105 +227,102 @@
     <script
         src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
     <script type="text/javascript">
-        function initialize() {
+		function initialize() {
+			var options = {types: ['(cities)'],componentRestrictions: {country: "ar"}};
+			var input = document.getElementById('ciudad');
+			var autocomplete = new google.maps.places.Autocomplete(input, options);
 
-            var options = {types: ['(cities)'],componentRestrictions: {country: "ar"}};
-            var input = document.getElementById('ciudad');
-            var autocomplete = new google.maps.places.Autocomplete(input, options);
+			google.maps.event.addListener(autocomplete, 'place_changed', function() {
+				input.className = '';
+				var place = autocomplete.getPlace();
+				   
+				if (!place.geometry) {
+				  // Inform the user that the place was not found and return.
+				  input.className = 'notfound';
+				  return;
+				}
 
-            google.maps.event.addListener(autocomplete, 'place_changed', function() {
-                input.className = '';
-                var place = autocomplete.getPlace();
+				$('#reference').val(place.reference);       
+				$("#ciudadError").html("");
+			});
+		}
 
-                if (!place.geometry) {
-                  // Inform the user that the place was not found and return.
-                  input.className = 'notfound';
-                  return;
-                }
+		google.maps.event.addDomListener(window, 'load', initialize);
 
-                $('#reference').val(place.reference);
-                $("#ciudadError").html("");
-            });
-        }
+		(function () {
+		   
+			$('#ciudad').on("propertychange input cut paste", function () {
 
-        google.maps.event.addDomListener(window, 'load', initialize);
+				$("#ciudadError").html("<p>Comenz&aacute; a escribir y seleccion&aacute; del listado</p>");
+				$("#reference").val("");
+			});
+		}());
 
-        (function () {
+		(function () {   
+			$('*').validator({
+				custom: {
+					username: function($el) {
 
-            $('#ciudad').on("propertychange input cut paste", function () {
+							var pattern = '';
 
-                $("#ciudadError").html("<p>Comenz&aacute; a escribir y seleccion&aacute; del listado</p>");
-                $("#reference").val("");
-            });
-        }());
+							//caracteres permitidos						
+							pattern = new RegExp(/^([a-z0-9ń_-])+$/i);
 
-        (function () {
+							if(!pattern.test($el.val())) {
+								return '<?= $this->lang->line('username')?>';		
+							}
 
+							//debe comenzar por letra						
+							pattern = new RegExp(/^[a-zA-Z]/);
 
-            var validatorOptions = {
-                custom: {
+							if(!pattern.test($el.val())) {
+								return 'c';		
+							}						
 
-                    username: function($el) {
+							//limitar como se usan los guiones						
+							pattern = new RegExp(/^((?!.*_-)(?!.*-_)(?!.*__)(?!.*--)).*$/);
 
-                        var pattern = '';
+							if(!pattern.test($el.val())) {
+								return 'd';		
+							}
 
-                        //caracteres permitidos
-                        pattern = new RegExp(/^([a-z0-9\u00f1_-])+$/i);
+							//caracteres como minimo
+							pattern = new RegExp(/.{3,}/);
 
-                        if(!pattern.test($el.val())) {
-                            return decodeHtml('<?= $this->lang->line('username')?>');
-                        }
+							if(!pattern.test($el.val())) {
+								return 'a';
+								//min_length[' . $this->config->item ('username_min_length', 'tank_auth') . ']
+								//$config['username_min_length'] = 6;
+							}
+							
+							//debe terminar con alfanumerico						
+							pattern = new RegExp(/[a-zA-Z0-9]$/);
 
-                        //debe comenzar por letra
-                        pattern = new RegExp(/^[a-z]/i);
-
-                        if(!pattern.test($el.val())) {
-                            return decodeHtml('<?= $this->lang->line('first_letter')?>');
-                        }
-
-                        //limitar como se usan los guiones
-                        pattern = new RegExp(/^((?!.*_-)(?!.*-_)(?!.*__)(?!.*--)).*$/);
-
-                        if(!pattern.test($el.val())) {
-                            return decodeHtml('<?= $this->lang->line('limit_scores')?>');
-                        }
-
-                        //caracteres como minimo
-                        pattern = new RegExp(/.{<?= $this->config->item('username_min_length', 'tank_auth')?>,}/);
-
-                        if(!pattern.test($el.val())) {
-
-                            return decodeHtml('<?= sprintf($this->lang->line('min_length'), '', $this->config->item('username_min_length', 'tank_auth')); ?>');
-                        }
-
-                        //debe terminar con alfanumerico
-                        pattern = new RegExp(/[a-z0-9\u00f1]$/i);
-
-                        if(!pattern.test($el.val())) {
-                            return 'e';
-                        }
-
-                    }
-                }
-            };
-
-            $("#registerForm").validator(validatorOptions);
-
-        }());
-
-        (function () {
-            $( "#registerForm" ).submit(function( event ) {
-                $("#submit").prop("disabled",true);
-                $("#submit").val("Espere ...");
-
-                if($('#reference').val()==""){
-                    $("#ciudad").val("");
-                }
-            })
-        }());
+							if(!pattern.test($el.val())) {
+								return 'e';		
+							}
+						
+						
+					}
+				}
+			});
+		}()); 
+	
+	    (function () {   
+			$( "#registerForm" ).submit(function( event ) {
+				$("#submit").prop("disabled",true);
+				$("#submit").val("Espere ...");
+			   
+				if($('#reference').val()==""){
+					$("#ciudad").val("");
+				}
+			})
+		}()); 
 
 
 
-
+	
     </script>
     <?php $this->load->view('footer.php'); ?>
+
+
