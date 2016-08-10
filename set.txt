@@ -1,0 +1,2 @@
+def int 0;
+def ran i 1;
