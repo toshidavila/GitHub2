@@ -1,2 +1,328 @@
-def int 0;
-def ran i 1;
+    <?php
+
+    /**
+     * @copyright Copyright (C) 2016 FIABLEZ
+     */
+
+    if ($use_username) {
+        $username = array(
+            'name'    => 'username',
+            'class' => 'form-control',
+            'id'    => 'username',
+			'type' => 'text',
+			'required' => '',
+			'data-required-error' => 'PONELOOOOO',
+            'value' => set_value('username'),
+            'maxlength'    => $this->config->item('username_max_length', 'tank_auth'),
+            'placeholder' => 'Permanecer&aacute; visible en tu perfil'
+        );
+    }
+    $nombre = array(
+            'name'    => 'nombre',
+            'class' => 'form-control',
+            'id'    => 'nombre',
+            'value'    => set_value('nombre'),
+            'maxlength'    => $this->config->item('nombre_max_length', 'tank_auth'),
+            'placeholder' => 'Permanecer&aacute; invisible en tu perfil',
+			'data-username' => 'foo'
+    );
+    $apellido = array(
+            'name'    => 'apellido',
+            'class' => 'form-control',
+            'id'    => 'apellido',
+            'value'    => set_value('apellido'),
+            'maxlength'    => $this->config->item('apellido_max_length', 'tank_auth'),
+            'placeholder' => 'Permanecer&aacute; invisible en tu perfil'
+    );
+    $email = array(
+        'name'    => 'email',
+        'class' => 'form-control',
+        'id'    => 'email',
+		'type'    => 'text',
+		'pattern' => '^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?',
+        'value'    => set_value('email'),
+        'maxlength'    => $this->config->item('email_max_length', 'tank_auth'),
+        'placeholder' => 'Permanecer&aacute; invisible en tu perfil'
+    );
+    $password = array(
+        'name'    => 'password',
+        'class' => 'form-control',
+        'id'    => 'password',
+        'maxlength'    => $this->config->item('password_max_length', 'tank_auth')
+    );
+    $confirm_password = array(
+        'name'    => 'confirm_password',
+        'class' => 'form-control',
+        'id'    => 'confirm_password',
+        'maxlength'    => $this->config->item('password_max_length', 'tank_auth')
+    );
+    $ciudad = array(
+        'name'    => 'ciudad',
+        'class' => 'form-control',
+        'id'    => 'ciudad',
+        'value'    => set_value('ciudad'),
+        'maxlength'    => $this->config->item('ciudad_max_length', 'tank_auth'),
+        'placeHolder' => ''
+    );
+    $captcha = array(
+        'name'    => 'captcha',
+        'class' => 'form-control',
+        'id'    => 'captcha',
+        'maxlength'    => 8
+    );
+    ?>
+    <?php $this->load->view('header.php'); ?>
+
+    <div class="container wrapper">
+
+        <div class="form-header">Registrarse</div>
+        <a href='<?php echo $fbLorginUrl ?>'><span class="facebookConnect"><span class="facebookLogo"></span>Ingresar con Facebook</span></a>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form role="form" action="<?php echo base_url()?>ucp/register" method="post" id ="registerForm" data-toggle="validator">
+				
+					<div class="form-group hidden">
+						<label for="ci_csrf_token" class="sr-only"></label>
+						<input type="hidden" class="form-control" name="<?=$this->security->get_csrf_token_name();?>" value="<?=$this->security->get_csrf_hash()?>" />
+					</div>
+                   
+                    <?php if ($use_username) { ?>                   
+                    <div class="form-group <?=(getErr($username['name'], isset($errors)?$errors:NULL)!=''?'has-error':'')?>">
+                        <?php echo form_label('Nombre de usuario *', $username['id']); ?>
+                        <?php echo form_input($username); ?>
+						<span class="help-block with-errors"><?= getErr($username['name'], isset($errors)?$errors:NULL) ?></span>
+                    </div>
+                    <?php } ?>
+                    <div class="form-group">
+                        <?php echo form_label('Nombre *', $nombre['id']); ?>
+                        <?php echo form_input($nombre); ?>
+                        <span class="help-block with-errors"></span>
+                    </div>
+                    <div class="form-group">
+                        <?php echo form_label('Apellido *', $apellido['id']); ?>
+                        <?php echo form_input($apellido); ?>
+                        <span style="color: red; text-align: left;"><?php echo form_error($apellido['name']); ?><p><?php echo isset($errors[$apellido['name']])?$errors[$apellido['name']]:''; ?></p></span>
+                    </div>
+                    <div class="form-group">
+                        <?php echo form_label('Correo electr&oacute;nico *', $email['id']); ?>
+                        <?php echo form_input($email); ?>
+						<div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <?php echo form_label('Contrase&ntilde;a *', $password['id']); ?>
+                        <?php echo form_password($password); ?>
+                        <span style="color: red; text-align: left;"><?php echo form_error($password['name']); ?></span>
+                    </div>
+                    <div class="form-group">
+                        <?php echo form_label('Confirmar contrase&ntilde;a *', $confirm_password['id']); ?>
+                        <?php echo form_password($confirm_password); ?>
+                        <span style="color: red; text-align: left;"><?php echo form_error($confirm_password['name']); ?></span>
+                    </div>
+                    <div class="form-group">
+                        <?php echo form_label('Ciudad *', $ciudad['id']); ?>
+                        <?php echo form_input($ciudad); ?>
+                        <span id='ciudadError' style="color: red; text-align: left;">
+                            <?php echo form_error('reference'); ?>
+                            <p><?php echo isset($errors[$ciudad['name']])?$errors[$ciudad['name']]:''; ?></p>
+                        </span>
+                        <input type="hidden" name="reference" id="reference" value="<?=set_value('reference')?>" /></td>
+                    </div>
+                    <div class="form-group">
+                        Fecha de nacimiento *
+                        <select name="day"><option value="0">D&iacute;a</option><?php echo generate_options(set_value('day'),1,31)?></select>
+                        <select name="month"><option value="0">Mes</option><?php echo generate_options(set_value('month'),1,12,'callback_month')?></select>
+                        <select name="year"><option value="0">A&ntilde;o</option><?php echo generate_options(set_value('year'),2014,1900)?></select>
+                        <span style="color: red; text-align: left;"><?php echo form_error('dob'); ?></span>
+                    </div>
+                    <div class="form-group">
+                        G&eacute;nero *
+                        <select name="genero"><option value="0"></option><?php echo generate_options(set_value('genero'),1,2,'callback_genero')?></select>
+                        <span style="color: red; text-align: left;"><?php echo form_error('genero'); ?></span>
+                    </div>       
+    <?php /*
+                    <?php if ($captcha_registration) {
+                        if ($use_recaptcha) { ?>
+                    <tr>
+                        <td colspan="2">
+                            <div id="recaptcha_image"></div>
+                        </td>
+                        <td><a href="javascript:Recaptcha.reload()">Get another CAPTCHA</a>
+                            <div class="recaptcha_only_if_image">
+                                <a href="javascript:Recaptcha.switch_type('audio')">Get an audio
+                                    CAPTCHA</a>
+                            </div>
+                            <div class="recaptcha_only_if_audio">
+                                <a href="javascript:Recaptcha.switch_type('image')">Get an image
+                                    CAPTCHA</a>
+                            </div></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="recaptcha_only_if_image">Enter the words above</div>
+                            <div class="recaptcha_only_if_audio">Enter the numbers you hear</div>
+                        </td>
+                        <td><input type="text" id="recaptcha_response_field"
+                            name="recaptcha_response_field" /></td>
+                        <td style="color: red; text-align: left;"><?php echo form_error('recaptcha_response_field'); ?></td>
+                        <?php echo $recaptcha_html; ?>
+                    </tr>
+                    <?php } else { ?>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <td align="left">
+                            <p>Ingres&aacute; el c&oacute;digo tal cu&aacute;l aparece:</p>
+                            <?php echo $captcha_html; ?>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th><?php echo form_label('C&oacute;digo de confirmaci&oacute;n', $captcha['id']); ?></th>
+                        <td><?php echo form_input($captcha); ?>
+                        <span style="color: red; text-align: left;"><?php echo form_error($captcha['name']); ?></span></td>
+                    </tr>
+                    <?php }
+                    } ?>
+                   
+                    <tr>
+                        <th colspan="2" style="padding-top: 30px;"><input type="checkbox"
+                            name='aceptLegales' value="1"
+                            <?php if(set_value('aceptLegales')):?> checked="checked"
+                            <?php endif;?>> <span id="legales" class="legales">Acepto los <a
+                                href="<?php echo site_url('/page/tyc')?>">T&eacute;rminos y
+                                    Condiciones</a> y las <a
+                                href="<?php echo site_url('/page/priv')?>">Pol&iacute;ticas de
+                                    Privacidad.</a></span> <span
+                            style="color: red; text-align: left;" class="legales"><?php echo form_error('aceptLegales');?></span>
+                        </th>
+                    </tr>
+    */?>
+
+                        <th><?php echo form_submit('register', 'Registrarse', 'class="submit" id="submit"'); ?>               
+
+
+                    <div class="leylegal">
+                        <b style="font-size:10px;">AVISO LEGAL:</b>
+                        FIABLEZ utilizar&aacute; la informaci&oacute;n para los siguientes fines: a)
+                        identificaci&oacute;n y autenticaci&oacute;n, b) administraci&oacute;n y gesti&oacute;n comercial,
+                        c) mejora del servicio, d) fines estad&iacute;sticos, e) env&iacute;o de
+                        notificaciones, promociones o publicidad. Los datos personales no
+                        ser&aacute;n difundidos ni empleados para un fin distinto o incompatible a
+                        los mencionados precedentemente. Las bases de datos de FIABLEZ se
+                        encuentran registradas en la Direcci&oacute;n Nacional de Protecci&oacute;n de Datos
+                        Personales del Ministerio de Justicia y DDHH, en cumplimiento del art.
+                        3 de la Ley 25.326. El titular de los datos personales puede ejercer
+                        el derecho de acceso a los mismos en forma gratuita a intervalos no
+                        inferiores a 6 meses, salvo que se acredite un inter&eacute;s leg&iacute;timo al
+                        efecto, conforme al art. 14, inc. 3 de la Ley 25.326. La Direcci&oacute;n
+                        Nacional de Protecci&oacute;n de Datos Personales, &Oacute;rgano de Control de la
+                        Ley 25.326, tiene la atribuci&oacute;n de atender las denuncias y reclamos
+                        que se interpongan con relaci&oacute;n al incumplimiento de las normas sobre
+                        protecci&oacute;n de datos personales.
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+    <script type="text/javascript">
+		function initialize() {
+			var options = {types: ['(cities)'],componentRestrictions: {country: "ar"}};
+			var input = document.getElementById('ciudad');
+			var autocomplete = new google.maps.places.Autocomplete(input, options);
+
+			google.maps.event.addListener(autocomplete, 'place_changed', function() {
+				input.className = '';
+				var place = autocomplete.getPlace();
+				   
+				if (!place.geometry) {
+				  // Inform the user that the place was not found and return.
+				  input.className = 'notfound';
+				  return;
+				}
+
+				$('#reference').val(place.reference);       
+				$("#ciudadError").html("");
+			});
+		}
+
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+		(function () {
+		   
+			$('#ciudad').on("propertychange input cut paste", function () {
+
+				$("#ciudadError").html("<p>Comenz&aacute; a escribir y seleccion&aacute; del listado</p>");
+				$("#reference").val("");
+			});
+		}());
+
+		(function () {   
+			$('*').validator({
+				custom: {
+					username: function($el) {
+
+							var pattern = '';
+
+							//caracteres permitidos						
+							pattern = new RegExp(/^([a-z0-9ń_-])+$/i);
+
+							if(!pattern.test($el.val())) {
+								return '<?= $this->lang->line('username')?>';		
+							}
+
+							//debe comenzar por letra						
+							pattern = new RegExp(/^[a-zA-Z]/);
+
+							if(!pattern.test($el.val())) {
+								return 'c';		
+							}						
+
+							//limitar como se usan los guiones						
+							pattern = new RegExp(/^((?!.*_-)(?!.*-_)(?!.*__)(?!.*--)).*$/);
+
+							if(!pattern.test($el.val())) {
+								return 'd';		
+							}
+
+							//caracteres como minimo
+							pattern = new RegExp(/.{3,}/);
+
+							if(!pattern.test($el.val())) {
+								return 'a';
+								//min_length[' . $this->config->item ('username_min_length', 'tank_auth') . ']
+								//$config['username_min_length'] = 6;
+							}
+							
+							//debe terminar con alfanumerico						
+							pattern = new RegExp(/[a-zA-Z0-9]$/);
+
+							if(!pattern.test($el.val())) {
+								return 'e';		
+							}
+						
+						
+					}
+				}
+			});
+		}()); 
+	
+	    (function () {   
+			$( "#registerForm" ).submit(function( event ) {
+				$("#submit").prop("disabled",true);
+				$("#submit").val("Espere ...");
+			   
+				if($('#reference').val()==""){
+					$("#ciudad").val("");
+				}
+			})
+		}()); 
+
+
+
+	
+    </script>
+    <?php $this->load->view('footer.php'); ?>
+
+
