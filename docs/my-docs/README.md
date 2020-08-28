@@ -1,0 +1,1 @@
+<a href="../my-resource/resource.md">click</a>
